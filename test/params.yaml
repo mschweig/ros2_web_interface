@@ -1,0 +1,10 @@
+test_publisher_node:
+  ros__parameters:
+    topics: |
+      chatter:
+        name: "/ros2_web_service_test/chatter"
+        type: "message"
+        test_message: "Hello param!"
+      camera_image:
+        name: "/ros2_web_service_test/camera/image"
+        type: "image"

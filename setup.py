@@ -5,7 +5,7 @@ package_name = 'ros2_web_interface'
 setup(
     name=package_name,
     version='0.0.0',
-    packages=find_packages(exclude=['test']),
+    packages=find_packages(exclude=['']),
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
@@ -28,7 +28,7 @@ setup(
     entry_points={
         'console_scripts': [
             'ros2_web_interface = ros2_web_interface.main:main',
-            'test_publishers = ros2_web_interface.test_publishers:main',
+            'test_publishers = test.test_publishers:main',
         ],
     },
 )

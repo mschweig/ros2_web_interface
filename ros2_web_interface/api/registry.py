@@ -1,4 +1,3 @@
-# ros2_web_interface/api/registry.py
 from fastapi import APIRouter
 from ros2_web_interface.api.system_routes import get_system_router
 from ros2_web_interface.api.topic_routes import get_topic_router

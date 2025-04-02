@@ -4,7 +4,7 @@
 [![ROS 2](https://img.shields.io/badge/ROS%202-Humble-blue)](https://docs.ros.org/en/humble/index.html)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 
-A modular, production-grade web interface for interacting with ROS 2 topics using FastAPI.
+A modular web interface for interacting with ROS 2 topics using FastAPI.
 
 This project enables dynamic subscription to ROS 2 topics (e.g., messages and images), returning structured data over HTTP. It follows clean software architecture principles using the SOLID pattern and includes ROS abstraction, Pydantic validation, and extensible endpoint design.
 

@@ -1,4 +1,3 @@
-# ros2_web_interface/api/system_routes.py
 from fastapi import APIRouter
 from ros2_web_interface.ros.factory import ROSInterfaceFactory
 

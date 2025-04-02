@@ -1,4 +1,3 @@
-# ros2_web_interface/api/topic_routes.py
 from fastapi import APIRouter, Depends, HTTPException, Response
 from ros2_web_interface.models import TopicQuery, MessageResponse
 from ros2_web_interface.ros.factory import ROSInterfaceFactory

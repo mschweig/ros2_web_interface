@@ -1,4 +1,3 @@
-# ros2_web_interface/main.py
 from fastapi import FastAPI
 from ros2_web_interface.api.registry import get_router
 import rclpy

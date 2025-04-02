@@ -1,4 +1,4 @@
-# ROS 2 Web Interface (FastAPI)
+# ROS 2 Web Interface
 
 [![License](https://img.shields.io/github/license/mschweig/ros2_web_interface.svg)](LICENSE)
 [![ROS 2](https://img.shields.io/badge/ROS%202-Humble-blue)](https://docs.ros.org/en/humble/index.html)
@@ -28,17 +28,6 @@ This project enables dynamic subscription to ROS 2 topics (e.g., messages and im
 - Python 3.8+
 
 ### ROS dependencies (package.xml)
-- `rclpy`
-- `sensor_msgs`
-- `std_msgs`
-- `cv_bridge`
-- `ament_index_python`
-- `python3-fastapi`
-- `python3-uvicorn`
-- `python3-pydantic`
-- `python3-opencv`
-- `python3-yaml`
-- `python3-requests`
 
 > ✅ All Python dependencies are declared in `package.xml` and can be installed with:
 

@@ -6,7 +6,7 @@ from ros2_web_interface.ros.factory import ROSInterfaceFactory
 def get_topic_router(ros_node):
     router = APIRouter()
 
-    @router.get("/get_data", response_class=Response)
+    @router.get("/get_data")
     def get_data(query: TopicQuery = Depends()):
         handler = ROSInterfaceFactory.get_handler("topic", ros_node)
         try:

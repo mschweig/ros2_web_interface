@@ -112,7 +112,9 @@ This project includes a test publisher and a `pytest` suite:
 ros2 run ros2_web_interface test_publishers --ros-args --params-file src/ros2_web_interface/test/params.yaml
 
 # Run integration tests
-pytest src/ros2_web_interface/test
+pytest src/ros2_web_interface/test/test_get_data.py
+pytest src/ros2_web_interface/test/test_get_image.py
+
 ```
 
 ---

@@ -1,12 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
-from ros2_web_interface.models import TopicQuery, MessageResponse
+from fastapi import APIRouter, HTTPException, Depends, Response
 from ros2_web_interface.ros.factory import ROSInterfaceFactory
+from ros2_web_interface.models import GetDataQuery, MessageResponse
 
 def get_topic_router(ros_node):
     router = APIRouter()
 
-    @router.get("/get_data")
-    def get_data(query: TopicQuery = Depends()):
+    @router.get("/get_data", response_model=MessageResponse, responses={200: {"description": "JSON or image response"}})
+    def get_data(query: GetDataQuery = Depends()):
         handler = ROSInterfaceFactory.get_handler("topic", ros_node)
         try:
             result = handler.call(query.topic, query.timeout)

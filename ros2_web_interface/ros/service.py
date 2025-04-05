@@ -1,4 +1,3 @@
-# ros2_web_interface/ros/service.py
 import rclpy
 import importlib
 import time

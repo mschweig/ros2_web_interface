@@ -1,4 +1,3 @@
-# ros/factory.py
 from ros2_web_interface.ros.topic import TopicHandler
 from ros2_web_interface.ros.system import SystemHandler
 from ros2_web_interface.ros.service import ServiceHandler

@@ -1,4 +1,3 @@
-# ros/system.py
 from ros2_web_interface.ros.base import ROSInterface
 
 class SystemHandler(ROSInterface):
@@ -9,6 +8,6 @@ class SystemHandler(ROSInterface):
         if name == "list_topics":
             return {"topics": self.node.get_topic_names_and_types()}
         elif name == "list_nodes":
-            return {"nodes": self.node.get_node_names()}
+            return {"nodes": self.node.get_node_names_and_namespaces()}
         else:
             raise ValueError(f"Unknown system call: {name}")

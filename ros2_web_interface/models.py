@@ -1,16 +1,23 @@
 from pydantic import BaseModel, Field
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 class GetDataQuery(BaseModel):
     topic: str = Field(..., description="ROS topic name", example="/ros2_web_service_test/chatter")
     timeout: float = Field(5.0, gt=0, description="Timeout in seconds", example=5.0)
 
 class CallServiceRequest(BaseModel):
-    payload: Dict[str, Any] = Field(
+    __root__: Dict[str, Any] = Field(
         default_factory=dict,
-        description="Optional dictionary of fields for the ROS service request",
+        description="Dictionary of service request fields",
         example={"dock_id": 520}
     )
+
+    def dict(self, *args, **kwargs):
+        return super().dict(*args, **kwargs).get("__root__", {})
+
+class ServiceQuery(BaseModel):
+    topic: str = Field(..., example="/robot/dock")
+    timeout: float = Field(30.0, gt=0, example=20.0)
 
 class MessageResponse(BaseModel):
     topic: str = Field(..., example="/ros2_web_service_test/chatter")

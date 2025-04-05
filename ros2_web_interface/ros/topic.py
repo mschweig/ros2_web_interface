@@ -1,4 +1,5 @@
 import threading
+import time
 from sensor_msgs.msg import Image as ROSImage
 from rosidl_runtime_py.utilities import get_message
 from rosidl_runtime_py.convert import message_to_ordereddict
@@ -7,6 +8,7 @@ import cv2
 from fastapi import Response
 from ros2_web_interface.models import MessageResponse
 from ros2_web_interface.ros.base import ROSInterface
+import rclpy
 
 class TopicHandler(ROSInterface):
     def __init__(self, node):
@@ -25,12 +27,15 @@ class TopicHandler(ROSInterface):
             sub = self.node.create_subscription(
                 msg_class, name, self._callback, qos_profile=10
             )
-            received = self.event.wait(timeout)
+
+            start = time.time()
+            while not self.event.is_set():
+                rclpy.spin_once(self.node, timeout_sec=0.1)
+                if time.time() - start > timeout:
+                    self.node.destroy_subscription(sub)
+                    raise TimeoutError(f"Timeout waiting for message on {name}")
+
             self.node.destroy_subscription(sub)
-
-            if not received:
-                raise TimeoutError(f"Timeout waiting for message on {name}")
-
             return self._format_response(name, self.latest_msg)
 
     def _callback(self, msg):

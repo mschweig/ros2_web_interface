@@ -13,7 +13,6 @@ def startup():
     global ros_node
     rclpy.init()
     ros_node = ROSNode()
-    threading.Thread(target=rclpy.spin, args=(ros_node,), daemon=True).start()
     app.include_router(get_router(ros_node))
 
 class ROSNode(Node):

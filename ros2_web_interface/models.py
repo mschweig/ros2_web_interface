@@ -41,3 +41,10 @@ class NodeInfo(BaseModel):
 
 class NodeListResponse(BaseModel):
     nodes: List[NodeInfo]
+
+class ServiceListResponse(BaseModel):
+    services: List[str] = Field(
+        ..., 
+        description="List of available ROS services",
+        example=["/robot/dock", "/robot/undock"]
+    )

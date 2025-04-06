@@ -10,7 +10,7 @@ def get_service_router(ros_node):
     @router.post("/call_service", response_model=CallServiceResponse)
     def call_service(
         query: ServiceQuery = Depends(),
-        req: CallServiceRequest = Body(default=None)
+        req: Optional[CallServiceRequest] = Body(default=None, description="Service request body (unwrapped)")
     ):
         handler = ROSInterfaceFactory.get_handler("service", ros_node)
         payload = req.dict() if req else {}

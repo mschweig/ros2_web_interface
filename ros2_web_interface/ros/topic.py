@@ -12,7 +12,7 @@ import rclpy
 
 class TopicHandler(ROSInterface):
     def __init__(self, node):
-        self.node = node
+        super().__init__(node)
         self.lock = threading.Lock()
         self.event = threading.Event()
         self.latest_msg = None
@@ -30,10 +30,10 @@ class TopicHandler(ROSInterface):
 
             start = time.time()
             while not self.event.is_set():
-                rclpy.spin_once(self.node, timeout_sec=0.1)
                 if time.time() - start > timeout:
                     self.node.destroy_subscription(sub)
                     raise TimeoutError(f"Timeout waiting for message on {name}")
+                time.sleep(0.1)
 
             self.node.destroy_subscription(sub)
             return self._format_response(name, self.latest_msg)

@@ -7,9 +7,10 @@ from rosidl_runtime_py.utilities import get_service
 from ros2_web_interface.ros.base import ROSInterface
 from rosidl_runtime_py.convert import message_to_ordereddict
 
+
 class ServiceHandler(ROSInterface):
     def __init__(self, node: Node):
-        self.node = node
+        super().__init__(node)
 
     def call(self, name: str, data=None, timeout=30.0):
         srv_type_str = self._get_service_type(name)
@@ -35,9 +36,10 @@ class ServiceHandler(ROSInterface):
         start_time = time.time()
 
         while not future.done():
-            rclpy.spin_once(self.node, timeout_sec=0.1)
             if time.time() - start_time > timeout:
+                self.node.destroy_client(client)
                 raise TimeoutError("Service call timed out")
+            time.sleep(0.1)
 
         result = future.result()
         self.node.destroy_client(client)

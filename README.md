@@ -6,7 +6,7 @@
 
 A modular web interface for interacting with ROS 2 topics using FastAPI.
 
-This project enables dynamic subscription to ROS 2 topics (e.g., messages and images), returning structured data over HTTP. It follows clean software architecture principles using the SOLID pattern and includes ROS abstraction, Pydantic validation, and extensible endpoint design.
+This project enables dynamic subscription to ROS 2 topics (e.g., messages and images), returning structured data over HTTP. It follows clean software architecture principles and includes ROS abstraction, Pydantic validation, and extensible endpoint design.
 
 ---
 
@@ -133,7 +133,7 @@ ros/
 api/
   ├─ registry.py    - Central route registration
   ├─ topic_routes.py- /get_data
-  └─ system_routes.py - /list_topics, /list_nodes
+  └─ system_routes.py - /list_topics, /list_nodes, /list_services
 ```
 
 ---

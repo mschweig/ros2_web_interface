@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from ros2_web_interface.api.registry import get_router
 import rclpy
 from rclpy.node import Node
-import threading
 import uvicorn
 
 app = FastAPI()

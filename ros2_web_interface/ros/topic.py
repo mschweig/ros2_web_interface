@@ -8,7 +8,7 @@ import cv2
 from fastapi import Response
 from ros2_web_interface.models import MessageResponse
 from ros2_web_interface.ros.base import ROSInterface
-import rclpy
+
 
 class TopicHandler(ROSInterface):
     def __init__(self, node):
@@ -17,10 +17,9 @@ class TopicHandler(ROSInterface):
         self.event = threading.Event()
         self.latest_msg = None
 
-    def call(self, name: str, timeout: float = 5.0):
+    def call(self, name: str, timeout: float):
         msg_type = self._get_msg_type(name)
         msg_class = get_message(msg_type)
-
         with self.lock:
             self.latest_msg = None
             self.event.clear()

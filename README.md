@@ -4,24 +4,23 @@
 [![ROS 2](https://img.shields.io/badge/ROS%202-Humble-blue)](https://docs.ros.org/en/humble/index.html)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 
-A modular web interface for interacting with ROS 2 topics using FastAPI.
-
-This project enables dynamic subscription to ROS 2 topics (e.g., messages and images), returning structured data over HTTP. It follows clean software architecture principles and includes ROS abstraction, Pydantic validation, and extensible endpoint design.
+A modular web interface for interacting with ROS 2 topics, services, and actions using FastAPI.
 
 ---
 
 ## 🚀 Features
 
 - ✅ Dynamic subscription to ROS 2 topics (auto message type detection)
-- ✅ Supports `sensor_msgs/Image`, `std_msgs/String`, and all other ROS 2 messages
-- ✅ Returns raw images as `image/png` via HTTP
-- ✅ Returns all other message types as JSON
-- ✅ Extensible architecture using ROS interface handlers
-- ✅ `/get_data`, `/list_topics`, and `/list_nodes`, `/list_services` endpoints
-- ✅ `/call_service` allows to execute ROS2 services like /robot/undock
-- ✅ `/list_actions` list available ROS2 actions
-- ✅ `/call_action` call ROS2 actions
-- ✅ Modular router structure with API versioning support
+- ✅ Supports all ROS 2 messages (e.g., `sensor_msgs/Image`, `std_msgs/String`)
+- ✅ Returns images as `image/png`, other messages as JSON
+- ✅ Execute ROS 2 **services** via `/call_service`
+- ✅ List available **actions** via `/list_actions`
+- ✅ Execute **long-running actions** with:
+  - `/call_action` → returns `goal_id`
+  - `/action_result` → poll for status/result
+- ✅ Persistent ROS node with background spinning
+- ✅ Modular, extensible architecture with ROS interface handlers
+- ✅ Versioned FastAPI routing for easy expansion
 
 ---
 
@@ -30,10 +29,7 @@ This project enables dynamic subscription to ROS 2 topics (e.g., messages and im
 - ROS 2 (Humble or newer)
 - Python 3.8+
 
-### ROS dependencies (package.xml)
-
-> ✅ All Python dependencies are declared in `package.xml` and can be installed with:
-
+> Install ROS dependencies:
 ```bash
 rosdep install --from-paths src --ignore-src -r -y
 ```
@@ -43,14 +39,9 @@ rosdep install --from-paths src --ignore-src -r -y
 ## 🔧 Installation
 
 ```bash
-# Clone the project into your ROS 2 workspace
 cd ~/ros2_ws/src
 git clone https://github.com/mschweig/ros2_web_interface.git ros2_web_interface
-
-# Install dependencies
 rosdep install --from-paths src --ignore-src -r -y
-
-# Build the workspace
 cd ~/ros2_ws
 colcon build --packages-select ros2_web_interface
 source install/setup.bash
@@ -61,63 +52,50 @@ source install/setup.bash
 ## 🚀 Usage
 
 ### Start the Web Server
-
 ```bash
 ros2 run ros2_web_interface ros2_web_interface
 ```
 
-It will start a FastAPI server at:
-```
-http://localhost:8000
-```
+> Available at: `http://localhost:8000`
 
 ---
 
-## 📘 Example Endpoints
+## 📘 Key Endpoints
 
-### 1. List all available topics
-```http
-GET /list_topics
-```
+### Topics:
+- **`GET /list_topics`** – List all topics
+- **`GET /get_data?topic=/your_topic`** – Fetch latest message/image
 
-### 2. List all active ROS nodes
-```http
-GET /list_nodes
-```
+### Services:
+- **`GET /list_services`** – List available services
+- **`POST /call_service?topic=/robot/undock`** – Call service, body = `{}` or `{dock_id: 520}`
 
-### 3. Get latest data from a ROS 2 topic
-```http
-GET /get_data?topic=/your_topic_name
-```
-- If the topic is an image (`sensor_msgs/Image`), the server returns a raw `image/png`.
-- For all other types, the server auto-detects the message type and returns structured JSON like:
-
-```json
-{
-  "topic": "/some_topic",
-  "type": "message",
-  "message_type": "YourMsgType",
-  "data": {
-    "field1": 42,
-    "field2": "abc"
-  }
-}
-```
+### Actions:
+- **`GET /list_actions`** – List available actions
+- **`POST /call_action?topic=/robot/dock`** – Send action goal:
+  ```json
+  { "dock_id": 520 }
+  ```
+  Response:
+  ```json
+  { "goal_id": "abc-123", "accepted": true }
+  ```
+- **`GET /action_result?goal_id=abc-123`** – Check status:
+  ```json
+  { "status": "pending" }
+  ```
+  or
+  ```json
+  { "status": "done", "result": { "success": true } }
+  ```
 
 ---
 
 ## 🧪 Testing
 
-This project includes a test publisher and a `pytest` suite:
-
 ```bash
-# Run test publishers (defined in params.yaml)
 ros2 run ros2_web_interface test_publishers --ros-args --params-file src/ros2_web_interface/test/params.yaml
-
-# Run integration tests
-pytest src/ros2_web_interface/test/test_get_data.py
-pytest src/ros2_web_interface/test/test_get_image.py
-
+pytest src/ros2_web_interface/test/
 ```
 
 ---
@@ -125,17 +103,20 @@ pytest src/ros2_web_interface/test/test_get_image.py
 ## 🏗 Architecture Overview
 
 ```
-main.py             - Entry point, spins up ROS and FastAPI
-models.py           - Pydantic request/response models
+main.py             - ROS + FastAPI startup
+models.py           - Pydantic models for validation & docs
 ros/
-  ├─ base.py        - Abstract handler interface (ROSInterface)
-  ├─ topic.py       - TopicHandler for dynamic topic data
-  ├─ system.py      - SystemHandler for meta operations
-  └─ factory.py     - Handler factory dispatcher
+  ├─ base.py        - Abstract handler (ROSInterface)
+  ├─ topic.py       - Dynamic topic data
+  ├─ service.py     - Call ROS services
+  ├─ action.py      - Async action support
+  ├─ system.py      - Topic/node/service listing
+  └─ factory.py     - Handler factory
 api/
-  ├─ registry.py    - Central route registration
-  ├─ topic_routes.py- /get_data
-  └─ system_routes.py - /list_topics, /list_nodes, /list_services
+  ├─ registry.py    - Route registration
+  ├─ topic_routes.py
+  ├─ service_routes.py
+  └─ action_routes.py
 ```
 
 ---
@@ -146,10 +127,6 @@ Apache License 2.0. Built for real-world ROS 2 applications.
 
 ---
 
-## 🙋 Need Help or Want to Contribute?
-Pull requests welcome — especially for adding support for actions, services, or publisher endpoints!
+## 🤛 Contribute?
 
----
-
-Made with ❤️ by robotics engineers for real-world robots.
-
+Pull requests welcome — let's build robust web tools for ROS 2 robots together! 🤖❤️

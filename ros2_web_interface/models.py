@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 class GetDataQuery(BaseModel):
     """
@@ -202,18 +202,28 @@ class CallActionRequest(BaseModel):
         return super().dict(*args, **kwargs).get("__root__", {})
 
 
-class CallActionResponse(BaseModel):
+class CallActionResponseAsync(BaseModel):
     """
-    Represents a response from a ROS action call.
+    Represents an asynchronous response after sending a ROS action goal.
 
     Attributes:
-        result (Dict[str, Any]): The result of the ROS action.
+        goal_id (str): Unique identifier for the action goal.
+        accepted (bool): Whether the goal was accepted by the action server.
     """
-    result: Dict[str, Any] = Field(
-        ..., 
-        description="Result of the ROS action", 
-        example={"success": True}
-    )
+    goal_id: str = Field(..., description="Unique identifier for the action goal", example="abc-123")
+    accepted: bool = Field(..., description="Whether the goal was accepted", example=True)
+
+
+class ActionResultResponse(BaseModel):
+    """
+    Represents the result status of a ROS action.
+
+    Attributes:
+        status (str): The status of the action (e.g., 'pending', 'done').
+        result (Dict[str, Any], optional): The result of the action if done.
+    """
+    status: str = Field(..., description="Status of the action", example="pending")
+    result: Optional[Dict[str, Any]] = Field(None, description="Result of the action if done", example={"success": True})
 
 
 class ActionListResponse(BaseModel):

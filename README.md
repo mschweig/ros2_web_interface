@@ -19,6 +19,8 @@ This project enables dynamic subscription to ROS 2 topics (e.g., messages and im
 - ✅ Extensible architecture using ROS interface handlers
 - ✅ `/get_data`, `/list_topics`, and `/list_nodes`, `/list_services` endpoints
 - ✅ `/call_service` allows to execute ROS2 services like /robot/undock
+- ✅ `/list_actions` list available ROS2 actions
+- ✅ `/call_action` call ROS2 actions
 - ✅ Modular router structure with API versioning support
 
 ---

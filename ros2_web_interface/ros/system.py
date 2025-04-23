@@ -6,7 +6,9 @@ class SystemHandler(ROSInterface):
 
     def call(self, name: str, data=None):
         if name == "list_topics":
-            return {"topics": self.node.get_topic_names_and_types()}
+            all_topics = self.node.get_topic_names_and_types()
+            filtered = [(topic, types) for topic, types in all_topics if "/_action/" not in topic]
+            return {"topics": filtered}
 
         elif name == "list_nodes":
             return {"nodes": self.node.get_node_names_and_namespaces()}

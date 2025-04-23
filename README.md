@@ -6,7 +6,7 @@
 
 A high-performance, modular web interface for interacting with ROS 2 topics, services, and actions via FastAPI.
 
-This project provides a robust and extensible framework for dynamic interaction with ROS 2 systems over HTTP, supporting real-time data access, service execution, and action handling. Designed with clean software architecture principles, it integrates ROS 2 with modern web technologies to enhance robotics development workflows.
+This project provides a robust and extensible framework for dynamic interaction with ROS 2 systems over HTTP, supporting quick data access, service execution, and action handling. Designed with clean software architecture principles, it integrates ROS 2 with modern web technologies to enhance robotics development workflows.
 
 ---
 
@@ -15,7 +15,6 @@ This project provides a robust and extensible framework for dynamic interaction 
 - ✅ **Dynamic Topic Subscription**: Auto-detects ROS 2 message types.
 - ✅ **Full Message Support**: Compatible with all ROS 2 message types, including `sensor_msgs/Image`.
 - ✅ **Media-Aware Responses**: Serves images as `image/png`, other messages as structured JSON.
-- ✅ **Service Invocation**: Execute any ROS 2 service via RESTful endpoints.
 - ✅ **Action Handling**: Submit and monitor long-running ROS 2 actions asynchronously.
 - ✅ **Extensible Architecture**: Modular handler system for easy feature expansion.
 - ✅ **Persistent Node**: Background spinning ensures continuous ROS 2 interaction.

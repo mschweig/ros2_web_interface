@@ -29,7 +29,7 @@ def get_system_router(ros_node):
         handler = ROSInterfaceFactory.get_handler("system", ros_node)
         try:
             raw = handler.call("list_services")
-            return {"services": [s[0] for s in raw["services"]]}
+            return {"services": raw}
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 

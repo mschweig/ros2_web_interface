@@ -15,7 +15,7 @@ This project provides a robust and extensible framework for dynamic interaction 
 - ✅ **Dynamic Topic Subscription**: Auto-detects ROS 2 message types.
 - ✅ **Full Message Support**: Compatible with all ROS 2 message types, including `sensor_msgs/Image`.
 - ✅ **Media-Aware Responses**: Serves images as `image/png`, other messages as structured JSON.
-- ✅ **Action Handling**: Submit and monitor long-running ROS 2 actions asynchronously.
+- ✅ **Action Handling**: Submit and monitor ROS 2 actions.
 - ✅ **Extensible Architecture**: Modular handler system for easy feature expansion.
 - ✅ **Persistent Node**: Background spinning ensures continuous ROS 2 interaction.
 - ✅ **API Versioning**: Structured routes ready for scalable API evolution.
@@ -87,7 +87,7 @@ ros/
   ├─ base.py        - Abstract handler interface (ROSInterface)
   ├─ topic.py       - TopicHandler for dynamic topic data
   ├─ service.py     - ServiceHandler for ROS service calls
-  ├─ action.py      - ActionHandler for async action management
+  ├─ action.py      - ActionHandler for action management
   ├─ system.py      - SystemHandler for metadata operations
   └─ factory.py     - Dynamic handler factory
 api/

@@ -8,7 +8,6 @@ import cv2
 from fastapi import Response
 from ros2_web_interface.models import MessageResponse
 from ros2_web_interface.ros.base import ROSInterface
-from concurrent.futures import Future as ThreadFuture
 
 
 class TopicHandler(ROSInterface):
@@ -21,6 +20,7 @@ class TopicHandler(ROSInterface):
     def call(self, name: str, timeout: float):
         msg_type = self._get_msg_type(name)
         msg_class = get_message(msg_type)
+
         with self.lock:
             self.latest_msg = None
             self.event.clear()
@@ -28,21 +28,15 @@ class TopicHandler(ROSInterface):
                 msg_class, name, self._callback, qos_profile=10
             )
 
-            future = self._wrap_event_in_future()
-            self.spin_until_future_complete(future, timeout)
+            start = time.time()
+            while not self.event.is_set():
+                if time.time() - start > timeout:
+                    self.node.destroy_subscription(sub)
+                    raise TimeoutError(f"Timeout waiting for message on {name}")
+                self.spin_once(timeout_sec=0.1)
 
             self.node.destroy_subscription(sub)
             return self._format_response(name, self.latest_msg)
-
-    def _wrap_event_in_future(self):
-        thread_future = ThreadFuture()
-
-        def waiter():
-            self.event.wait()
-            thread_future.set_result(True)
-
-        threading.Thread(target=waiter, daemon=True).start()
-        return thread_future
 
     def _callback(self, msg):
         if self.latest_msg is None:

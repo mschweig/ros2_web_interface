@@ -33,15 +33,17 @@ class ActionHandler(ROSInterface):
                 setattr(goal_msg, k, v)
 
         send_goal_future = client.send_goal_async(goal_msg)
-        goal_handle = self.spin_until_future_complete(send_goal_future, timeout)
+        self.spin_until_future_complete(send_goal_future, timeout)
+        goal_handle = send_goal_future.result()
 
-        if not goal_handle.accepted:
-            raise RuntimeError(f"Goal rejected by action server {name}")
+        if not goal_handle or not goal_handle.accepted:
+            raise RuntimeError(f"Failed to send goal to action server {name}")
 
         get_result_future = goal_handle.get_result_async()
-        result_future = self.spin_until_future_complete(get_result_future, timeout)
+        self.spin_until_future_complete(get_result_future, timeout)
+        result = get_result_future.result().result
 
-        return message_to_ordereddict(result_future.result)
+        return message_to_ordereddict(result)
 
     def list(self):
         action_names_and_types = get_action_names_and_types(self.node)

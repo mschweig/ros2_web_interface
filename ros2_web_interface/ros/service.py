@@ -32,19 +32,13 @@ class ServiceHandler(ROSInterface):
             for k, v in data.items():
                 setattr(request, k, v)
 
-        future: Future = client.call_async(request)
-        start_time = time.time()
-
-        while not future.done():
-            if time.time() - start_time > timeout:
-                self.node.destroy_client(client)
-                raise TimeoutError("Service call timed out")
-            time.sleep(0.1)
+        future = client.call_async(request)
+        self.spin_until_future_complete(future, timeout)
 
         result = future.result()
         self.node.destroy_client(client)
-
         return message_to_ordereddict(result)
+
 
     def _get_service_type(self, srv_name):
         for name, types in self.node.get_service_names_and_types():

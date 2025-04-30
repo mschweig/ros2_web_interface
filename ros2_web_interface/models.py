@@ -15,7 +15,7 @@ class GetDataQuery(BaseModel):
         example="/ros2_web_service_test/chatter"
     )
     timeout: float = Field(
-        20.0, 
+        30.0, 
         gt=0, 
         description="Timeout in seconds", 
         example=5.0

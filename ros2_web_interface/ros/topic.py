@@ -8,6 +8,7 @@ import cv2
 from fastapi import Response
 from ros2_web_interface.models import MessageResponse
 from ros2_web_interface.ros.base import ROSInterface
+from concurrent.futures import Future as ThreadFuture
 
 
 class TopicHandler(ROSInterface):
@@ -27,15 +28,21 @@ class TopicHandler(ROSInterface):
                 msg_class, name, self._callback, qos_profile=10
             )
 
-            start = time.time()
-            while not self.event.is_set():
-                if time.time() - start > timeout:
-                    self.node.destroy_subscription(sub)
-                    raise TimeoutError(f"Timeout waiting for message on {name}")
-                time.sleep(0.1)
+            future = self._wrap_event_in_future()
+            self.spin_until_future_complete(future, timeout)
 
             self.node.destroy_subscription(sub)
             return self._format_response(name, self.latest_msg)
+
+    def _wrap_event_in_future(self):
+        thread_future = ThreadFuture()
+
+        def waiter():
+            self.event.wait()
+            thread_future.set_result(True)
+
+        threading.Thread(target=waiter, daemon=True).start()
+        return thread_future
 
     def _callback(self, msg):
         if self.latest_msg is None:
